@@ -1,0 +1,55 @@
+#################################################################
+#								#
+# Copyright (c) 2007-2015 Fidelity National Information 	#
+# Services, Inc. and/or its subsidiaries. All rights reserved.	#
+#								#
+#	This source code contains the intellectual property	#
+#	of its copyright holder(s), and is made available	#
+#	under a license.  If you do not know the terms of	#
+#	the license, please stop and do not read further.	#
+#								#
+#################################################################
+
+#-----------------------------------------------
+# Mumps error condition handler macros
+#-----------------------------------------------
+.ifdef cygwin
+# This is provisionally bumped up by 8. It needs be be verified on a 64-bit cygwin computer
+chnd_size	=	288
+.else
+chnd_size	=	232
+.endif
+
+chnd_save_active =	0
+chnd_ch_active	=	8
+chnd_ch		=	16
+chnd_jmp	=	24
+
+	.data
+	.extern	ctxt
+
+	.text
+	.extern gtm_asm_establish
+
+.macro ESTABLISH label
+        call	gtm_asm_establish
+	movq	ctxt(REG_IP), REG64_ACCUM
+	leaq	mdb_condition_handler(REG_IP), REG64_SCRATCH1
+	movq    REG64_SCRATCH1, chnd_ch(%rax)		# ctxt->ch = x
+	addq	$chnd_jmp, REG64_ACCUM			# setjmp(ctxt->jmp)
+	movq	$0, REG64_ARG1
+	movq	REG64_ACCUM, REG64_ARG0
+	call 	__sigsetjmp@PLT
+	incl  	REG32_RET0
+	jne  	\label
+	REVERT
+	jmp  	return
+\label:
+.endm
+
+.macro REVERT
+	movq	ctxt(REG_IP), REG64_ACCUM		# active_ch = ctxt->save_active_c
+	movq	chnd_save_active(REG64_ACCUM), REG64_ACCUM
+	movq	REG64_ACCUM, active_ch(REG_IP)
+	subq  	$chnd_size, ctxt(REG_IP)		# ctxt--
+.endm
