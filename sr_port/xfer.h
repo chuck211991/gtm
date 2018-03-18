@@ -315,4 +315,5 @@ XFER(xf_zrupdate, op_zrupdate),
 XFER(xf_currhd, op_currhd),
 #endif
 XFER(xf_fnzcollate, op_fnzcollate),
-XFER(xf_fnzatransform, op_fnzatransform)
+XFER(xf_fnzatransform, op_fnzatransform),
+XFER(xf_fnzpiecediff, op_fnzpiecediff)

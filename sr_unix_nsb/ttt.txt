@@ -978,6 +978,11 @@ OC_FNZSUBSTR:   pushab  val.0                   ; /* Destination mval */
                 pushl   val.2                   ; /* starting character position */
                 pushab  val.1                   ; /* string */
                 calls   #4,xfer.xf_fnzsubstr
+OC_FNZPIECEDIFF:    pushab	val.0
+                pushab	val.3
+                pushab	val.2
+                pushab	val.1
+                calls	#4,xfer.xf_fnzpiecediff
 OC_FNZWIDTH:    pushab  val.0                   ; /* destination mval */
                 pushab  val.1                   ; /* string */
                 calls   #2,xfer.xf_fnzwidth

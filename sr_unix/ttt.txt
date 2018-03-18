@@ -428,6 +428,11 @@ OC_FNZPIECE:	pushab	val.0
 		pushab	val.2
 		pushab	val.1
 		calls	#5,xfer.xf_fnzpiece
+OC_FNZPIECEDIFF: pushab	val.0
+		pushab	val.3
+		pushab	val.2
+		pushab	val.1
+		calls	#4,xfer.xf_fnzpiecediff
 OC_FNZPOPULATION: pushab	val.0
 		pushab	val.2
 		pushab	val.1
