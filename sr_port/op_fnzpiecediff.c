@@ -1,7 +1,6 @@
 #include "mdef.h"
 #include "op.h"
 #include "stringpool.h"
-
 #include "matchc.h"
 #include "fnpc.h"
 
@@ -151,7 +150,7 @@ void op_fnzpiecediff(mval *arg1, mval *arg2, mval *del, mval *dst)
 				delim_matches = 0;
 				while (delim_matches < delim_len && arg2_i < arg2_len)
 				{
-					while (*arg2_p != *delim_p && arg2_i < arg1_len)
+					while (*arg2_p != *delim_p && arg2_i < arg2_len)
 					{
 						arg2_p++;
 						arg2_i++;
@@ -160,6 +159,8 @@ void op_fnzpiecediff(mval *arg1, mval *arg2, mval *del, mval *dst)
 					arg2_p += delim_matches;
 					arg2_i += delim_matches;
 				}
+				
+				if (arg1_i >= arg1_len || arg2_i >= arg2_len) found_end = 1;
 				
 			}
 			else  /* *arg1_p == *arg2_p */
@@ -172,10 +173,12 @@ void op_fnzpiecediff(mval *arg1, mval *arg2, mval *del, mval *dst)
 					if (temp_delim_matches == delim_len && delim_matches == delim_len)
 					{
 						curr_section++;
-						arg1_p += delim_matches-1;
-						arg1_i += delim_matches-1;
-						arg2_p += delim_matches-1;
-						arg2_i += delim_matches-1;
+						arg1_p += delim_matches;
+						arg1_i += delim_matches;
+						arg2_p += delim_matches;
+						arg2_i += delim_matches;
+						if (arg1_i >= arg1_len || arg2_i >= arg2_len) found_end = 1;
+						continue;
 					}
 				}
 				arg1_p++;
@@ -207,9 +210,10 @@ void op_fnzpiecediff(mval *arg1, mval *arg2, mval *del, mval *dst)
 						}
 						found_end = 1;
 						curr_section++;
+						arg1_p += delim_matches;
+						arg1_i += delim_matches;
+						continue;
 					}
-					arg1_p += delim_matches - 1;
-					arg1_i += delim_matches - 1;
 				}
 				arg1_p++;
 				arg1_i++;
