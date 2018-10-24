@@ -706,7 +706,7 @@ int		f_zgetsyi(oprtype *a, opctype op);
 int		f_zjobexam(oprtype *a, opctype op);
 int		f_zparse(oprtype *a, opctype op);
 int		f_zpeek(oprtype *a, opctype op);
-int 	f_zpiecediff(oprtype *a, opctype op);
+int		f_zpiecediff(oprtype *a, opctype op);
 int		f_zprevious(oprtype *a, opctype op);
 int		f_zqgblmod(oprtype *a, opctype op);
 int		f_zrupdate(oprtype *a, opctype op);
