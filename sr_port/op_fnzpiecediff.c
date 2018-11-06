@@ -41,8 +41,7 @@
 		temp_section /= 10;	\
 		section_len += 1;	\
 	}	\
-	ans_len += section_len;	\
-	if (curr_section > 1) ans_len++;	\
+	ans_len += section_len+1;	\
 }
 
 /*
@@ -83,7 +82,7 @@ void op_fnzpiecediff(mval *arg1, mval *arg2, mval *del, mval *dst)
 	unsigned int    *piece_diffs;
 	unsigned int    ans_len;
 	unsigned int    num_sections;
-	
+	unsigned int    alloc_len;
 	DCL_THREADGBL_ACCESS;
 	SETUP_THREADGBL_ACCESS;
 	
@@ -102,27 +101,26 @@ void op_fnzpiecediff(mval *arg1, mval *arg2, mval *del, mval *dst)
 	curr_section = 1;
 	ans_len = 0;
 	
-	ENSURE_STP_FREE_SPACE(arg1_len*arg2_len);
-	answer = (char *)stringpool.free;
-	
-	/* allocate max possible amount of pieces */
-	if (arg1_len >= arg2_len)
-	{
-		piece_diffs = (unsigned int*)calloc(arg1_len+1, sizeof(unsigned int));
-	}
-	else
-	{
-		piece_diffs = (unsigned int*)calloc(arg2_len+1, sizeof(unsigned int));
-	}
-	
 	if (delim_len == 0)
 	{
+		ENSURE_STP_FREE_SPACE(0);
+		answer = (char *)stringpool.free;
 		dst->mvtype = MV_STR;
 		dst->str.addr = answer;
 		dst->str.len = 0;
-	}
-	else
-	{
+	} else {
+		/* allocate max possible amount of pieces */
+		if (arg1_len >= arg2_len)
+		{
+			alloc_len = arg1_len + 1;
+		}
+		else
+		{
+			alloc_len = arg2_len + 1;
+		}
+		piece_diffs = (unsigned int*)malloc(alloc_len*sizeof(unsigned int));
+		memset(piece_diffs, 0, alloc_len*sizeof(unsigned int));
+	
 		found_end = 0;
 		while (arg1_i < arg1_len && arg2_i < arg2_len)
 		{
@@ -226,18 +224,21 @@ void op_fnzpiecediff(mval *arg1, mval *arg2, mval *del, mval *dst)
 		answer = (char *)stringpool.free;
 		num_sections = curr_section;
 		ans_index = 0;
+		found_end = 0;  /* check if any pieces have been found */
 		for (temp_i = 0; temp_i < num_sections; temp_i++)
 		{
 			if (piece_diffs[temp_i])
 			{
 				curr_section = temp_i + 1;
 				WRITE_SECTION_NUM(answer, ans_index, curr_section);
+				found_end = 1;
 			} 
 		}
-
+		
+		free(piece_diffs);
 		dst->mvtype = MV_STR;
 		dst->str.addr = answer;
-		dst->str.len = ans_len;
+		dst->str.len = ans_len-found_end;
 		return;
 	}
 }
