@@ -281,6 +281,7 @@ LITDEF nametabent fun_names[] =
 	,{6, "ZPARSE"}
 	,{5, "ZPEEK"}
 	,{3, "ZPI"}, {6, "ZPIECE"}
+	,{3, "ZPD"}, {8, "ZPIECEDI*"}
 	,{4, "ZPID"}
 	,{5, "ZPRIV"}, {8, "ZPRIVILE*"}
 	,{2, "ZQ"}, {8, "ZQGBLMOD"}
@@ -302,7 +303,7 @@ LITDEF unsigned char fun_index[27] =
 {
 	 0,  2,  2,  4,  6,  8, 12, 14, 14,	/* a b c d e f g h i */
 	17, 19, 19, 21, 21, 25, 27, 29, 35,	/* j k l m n o p q r */
-	39, 43, 47, 47, 48, 48, 48, 48, 122	/* s t u v w x y z ~ */
+	39, 43, 47, 47, 48, 48, 48, 48, 124	/* s t u v w x y z ~ */
 };
 
 /* Each entry corresponds to an entry in fun_names */
@@ -370,6 +371,7 @@ LITDEF fun_data_type fun_data[] =
 	,{ OC_FNZPARSE, ALL_SYS }
 	,{ OC_FNZPEEK, UNIX_OS }
 	,{ OC_FNZPIECE, ALL_SYS }, { OC_FNZPIECE, ALL_SYS }
+	,{ OC_FNZPIECEDIFF, ALL_SYS}, { OC_FNZPIECEDIFF, ALL_SYS}
 	,{ OC_FNZPID, VMS_OS }
 	,{ OC_FNZPRIV, VMS_OS }, { OC_FNZPRIV, VMS_OS }
 	,{ OC_FNZQGBLMOD, ALL_SYS }, { OC_FNZQGBLMOD, ALL_SYS }
@@ -451,6 +453,7 @@ GBLDEF int (*fun_parse[])(oprtype *, opctype) =		/* contains addresses so can't 
 	f_zparse,
 	f_zpeek,
 	f_piece, f_piece,
+	f_zpiecediff, f_zpiecediff,
 	f_mint,
 	f_mstr, f_mstr,
 	f_zqgblmod, f_zqgblmod,
